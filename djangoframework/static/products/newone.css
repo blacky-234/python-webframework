@@ -1,0 +1,7 @@
+.custom-container {
+  width: 30%;
+  padding-right: 1rem;   /* example value */
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+}

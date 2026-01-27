@@ -1,0 +1,10 @@
+{% load static %}
+<div class="d-flex flex-column sm-card-menu">
+    <a href="{% url 'websocket:systemstatus' %}"><button class="btn btn-primary ">WebSocket</button></a>
+    <a href="{% url 'products:selectinventory' %}"><button class="btn btn-info">Prodcts App</button></a>
+    <a href="{% url 'Employee:menuindex' %}"><button class="btn btn-warning">Employee App</button></a>
+
+
+    <a><button class="btn btn-primary ">Logout</button></a> 
+</div>
+

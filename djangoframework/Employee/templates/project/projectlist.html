@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <h1>project list </h1>
+    <div class="d-flex justify-content-end me-5">
+        <a href="#"><button class="btn btn-success">add</button></a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{project.name}}</td>
+                    <td>{{project.deadline}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+</body>
+</html>

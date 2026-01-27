@@ -1,0 +1,11 @@
+.sm-card-menu{
+    background-color: green;
+    width: 100%;
+
+    & a{
+        width: 170px;
+        height: 60px;
+        margin: 20px auto;
+        border-radius: 20px;
+    }
+}

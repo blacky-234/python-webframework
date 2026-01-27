@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <button id="job-create-btn">create</button>
+    </div>
+    <div style="margin: 0 auto;display: flex;justify-content: center;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Job ID</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody id="report-table-body">
+                {% for job in report %}
+                    {% include 'tablerow.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="{% static 'bootstrapframework/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'bootstrapframework/js/jquery.min.js' %}"></script>
+    <script src="{% static 'websocket/reportjobhandlw.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'layout/shotcutmenu.css' %}">
+</head>
+<body>
+    <div class=" d-flex justify-content-between align-items-center"style:"width: 100%;">
+        {% include 'layout/shotcutmenu.html' %}
+        {% include 'login.html' %}
+    </div>
+</body>
+
+<script src="{% static 'bootstrapframework/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'websocket.js' %}"></script>
+</html>

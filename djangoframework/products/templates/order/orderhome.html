@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>order pages</title>
+    <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div>
+        <a href="{% url 'products:addorderform' %}"><button>add order</button></a>
+    </div>
+    <h1>order pages</h1>    
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">S.No</th>
+                    <th scope="col">Prodcut Name</th>
+                    <th scope="col">Prodct Price</th>
+                    <th scope="col">Product Stock</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">oder quantity</th>
+                    <th scope="col">total price</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for ord in orders %}
+                <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ ord.product.name }}</td>
+                <td>{{ ord.product.price }}</td>
+                <td>{{ ord.product.stock }}</td>
+                <td>{{ ord.product.category.name }}</td>
+                <td>{{ ord.qty }}</td>
+                <td>{{ ord.total }}</td>
+                
+                </tr>  
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Shop UI{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'products/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <a href="{% url 'products:listproducts' %}" class="logo">MyShop</a>
+    <nav>
+      <a href="{% url 'products:listproducts' %}">Products</a>
+      {% comment %} <a href="{% url 'product_form_page' %}">Add Product</a>
+      <a href="{% url 'orders_page' %}">Orders</a> {% endcomment %}
+    </nav>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{% static 'products/script.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

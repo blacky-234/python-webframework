@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <h1>Employee List</h1>
+    <div class="d-flex justify-content-end me-5">
+        <a href="{% url 'Employee:employeeform' %}"><button class="btn btn-success">add Employee</button></a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>email</th>
+                <th>Department</th>
+                <th>Location</th>
+                <th>salary</th>
+                <th>joing date</th>
+                <th>Employee status</th>
+                <th>address</th>
+                <th>phone</th>
+                <th>Emergency Number</th>
+                <th>project name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in emp %}
+                <tr  onclick="window.location='{% url 'Employee:projectaddemployee' employee.id %}'" style="cursor:pointer;">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.email}}</td>
+                    <td>{{employee.department.name}}</td>
+                    <td>{{employee.department.location}}</td>
+                    <td>{{employee.salary}}</td>
+                    <td>{{employee.date_joined | date:"d-M-Y"}}</td>
+                    <td>{% if employee.is_active %}Active{% else %}Inactive{% endif %}</td>
+                    <td>{{employee.profile.address}}</td>
+                    <td>{{employee.profile.phone}}</td>
+                    <td>{{employee.profile.emergency_number}}</td>
+                    <td>
+                        {% for project in employee.projects.all %}
+                            <span class="badge bg-primary">{{ project.name }}</span>
+                        {% empty %}
+                            <span class="text-muted">No Project</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

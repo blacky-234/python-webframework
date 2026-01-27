@@ -1,0 +1,21 @@
+{% extends "myapp/base.html" %}
+{% block title %}Product Form{% endblock %}
+
+{% block content %}
+<h1 id="form_title">Add Product</h1>
+
+<form id="product_form">
+  <label>Name: <input name="name" id="p_name" required /></label>
+  <label>Price: <input name="price" id="p_price" type="number" step="0.01" required /></label>
+  <label>Stock: <input name="stock" id="p_stock" type="number" value="0" /></label>
+  <label>Category:
+    <select name="category" id="p_category"></select>
+  </label>
+
+  <div class="actions">
+    <button type="submit" id="save_btn">Save</button>
+    <button type="button" id="cancel_btn">Cancel</button>
+  </div>
+  <div id="form_msg" class="small"></div>
+</form>
+{% endblock %}

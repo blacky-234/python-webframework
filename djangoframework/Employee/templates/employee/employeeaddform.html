@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+    
+</head>
+<body>
+    <h1>add employee details</h1>
+    <div class="w-50" style="margin: auto;">
+        <form method="post" novalidate>
+            {% csrf_token %}        
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Employee Name</label>
+                <input type="text" name='empname' class="form-control" id="exampleFormControlInput1" placeholder="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Employee Email</label>
+                <input name="empemail" type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" required>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Employee Department</label>
+                <select class="form-control" name="empdep" required>
+                    {% for dep in departments %}
+                        <option value="{{ dep.id }}">{{ dep.name }} - {{ dep.location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Employee Salary</label>
+                <input type="number" name="empsalary" class="form-control" id="exampleFormControlInput1" required>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">address</label>
+                <textarea class="form-control" name="empaddress" id="exampleFormControlTextarea1" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Phone</label>
+                <input type="number" name="empphone" class="form-control" id="exampleFormControlInput1" required>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Emergency contact</label>
+                <input type="number" name="empcontact" class="form-control" id="exampleFormControlInput1">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

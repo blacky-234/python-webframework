@@ -1,0 +1,83 @@
+{% comment %} {% extends "products/base.html" %}
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<h1>Products</h1>
+
+<section class="controls">
+  <input id="search" placeholder="Search product..." />
+  <select id="category_filter">
+    <option value="">All categories</option>
+    {% for cat in categories %}<option value="{{ cat.id }}">{{ cat.name }}</option>{% endfor %}
+  </select>
+  <input id="min_price" placeholder="Min price" type="number" />
+  <input id="max_price" placeholder="Max price" type="number" />
+  <input id="stock" placeholder="Min stock" type="number" />
+  <button id="apply_filters">Apply</button>
+  <button id="clear_filters">Clear</button>
+</section>
+
+<section>
+  
+</section>
+
+<section id="products_list" class="grid"></section>
+
+<section class="pagination">
+  <button id="prev_page">Prev</button>
+  <span id="page_info"></span>
+  <button id="next_page">Next</button>
+</section>
+
+<!-- modal area for quick order -->
+<div id="order_modal" class="modal hidden">
+  <div class="modal-content">
+    <h3>Create Order</h3>
+    <p id="order_product_name"></p>
+    <label>Quantity: <input id="order_qty" type="number" value="1" min="1" /></label>
+    <div class="modal-actions">
+      <button id="place_order">Place Order</button>
+      <button id="cancel_order">Cancel</button>
+    </div>
+    <div id="order_msg" class="small"></div>
+  </div>
+</div>
+
+{% endblock %} {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
+</head>
+<body>
+  <a href="{% url 'products:productform' %}"><button>product</button></a>
+  <h1>product Lists</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">S.No</th>
+        <th scope="col">Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">Stock</th>
+        <th scope="col">Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ product.name }}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.stock }}</td>
+          <td>{{ product.category.name }}</td>
+        </tr>  
+      {% endfor %}  
+    </tbody>
+  </table>
+</body>
+</html>
