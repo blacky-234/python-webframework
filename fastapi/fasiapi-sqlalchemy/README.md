@@ -7,6 +7,7 @@ if already install some package throwing error install this package
 ```bash
 pip install uvicorn[standard]
 pip install "fastapi[standard]"
+pip install pydantic
 
 ```
 or

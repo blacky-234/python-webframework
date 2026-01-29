@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status,Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from src.auth.auth_service import AuthService
 from database import get_db
@@ -22,3 +22,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(),db:AsyncSession
 
     
     return {"access_token": token, "token_type": "bearer"}
+
+@auth.post("/refresh-token")
+async def refresh_token(refresh_token: str = Body(...),db:AsyncSession = Depends(get_db)):
+    
