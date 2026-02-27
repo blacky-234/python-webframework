@@ -16,6 +16,7 @@ class User(Base):
     phone = Column(String(15),nullable=True)
     role = Column(String(50),default="user")
     status = Column(Boolean, default=True)
+    deleted_at = Column(Boolean, default=False)
     refresh_tokens = relationship("TokenManagement",back_populates="user",cascade="all, delete-orphan")
 
 

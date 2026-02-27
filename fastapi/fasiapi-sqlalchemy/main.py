@@ -1,19 +1,26 @@
 from typing import Union
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.users import user_routes
 from src.users import user_models
 import database
 from src.auth import auth_routes
+from src.streamingapp import s_routes
 
 # Create database tables - usually at app startup (better to use migrations!)
 # user_models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI(debug=True)
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],#["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 app.include_router(user_routes.user_router)
 app.include_router(auth_routes.auth)
-
-
+app.include_router(s_routes.stram_rt)
 
 
 @app.get("/")

@@ -2,6 +2,14 @@ from django.db import models
 
 # Create your models here.
 
+class TimeStampedModel(models.Model):
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
 class Category(models.Model):
 
     name = models.CharField(max_length=100,db_index=True,unique=True)
@@ -25,15 +33,12 @@ class Product(models.Model):
         db_table = 'products'
 
 
-class Order(models.Model):
+class Order(TimeStampedModel):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     qty = models.IntegerField()
     total = models.FloatField(null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:
         db_table = 'orders'
-
-

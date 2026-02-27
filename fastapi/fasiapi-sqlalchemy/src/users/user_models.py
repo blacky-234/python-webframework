@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,ForeignKey,Boolean,Float,Numeric
+from sqlalchemy import Column,Integer,String,ForeignKey,Boolean,Float,Numeric,TIMESTAMP,func
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -10,8 +10,11 @@ class User(Base):
     username = Column(String(50),unique=True,index=True,nullable=False)
     email = Column(String(255),unique=True,index=True,nullable=False)
     full_name = Column(String(100),nullable=True)
-    password = Column(String(255),nullable=False)
-    is_active = Column(Boolean(),default=True)
+    password = Column(String,nullable=False)
+    is_active = Column(Boolean(),default=True,nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
+    deleted_at = Column(Boolean(),default=False,nullable=False)
+    refresh_tokens = relationship("TokenManagement",back_populates="user",cascade="all, delete-orphan")
     employee = relationship("Employee",back_populates="user",cascade="all, delete-orphan")
 
 

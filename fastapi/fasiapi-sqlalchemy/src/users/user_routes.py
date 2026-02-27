@@ -4,6 +4,7 @@ from . import user_schema
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
 from .user_service import UserService,UsernameAlreadyExists,EmailAlreadyExists
+from .depedencies import get_user_service
 
 user_router = APIRouter(
     prefix="/users",
@@ -11,20 +12,22 @@ user_router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+
 @user_router.post("/", response_model=user_schema.UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user_in: user_schema.UserCreate,db:AsyncSession = Depends(get_db)):
+async def create_user(user_in: user_schema.UserCreate,user_service:UserService = Depends(get_user_service)):
     try:
-        user_service = UserService(db)
-        result = await user_service.create(user_in)
+        result = await user_service.create_user(user_in)
+        print(f"Created user: {result.username} with email:")
         return result
     except UsernameAlreadyExists:
         raise HTTPException(status_code=400, detail="Username already registered")
     except EmailAlreadyExists:
         raise HTTPException(status_code=400, detail="Email already registered")
     except Exception as e:
+        print(f"Error creating user: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@user_router.get("/get")
+@user_router.get("/")
 def read_users():
     return [{"name": "Foo"}, {"name": "Bar"}]
 

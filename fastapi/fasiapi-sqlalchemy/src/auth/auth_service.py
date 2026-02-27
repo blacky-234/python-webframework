@@ -1,10 +1,12 @@
+from fastapi import Depends
+from database import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.users.user_service import UserService
 from src.core.password_utility import verify_password
 from src.users import user_models
 from authentication import Tokens
 from datetime import datetime, timedelta
-import auth_models
+from . import auth_models
 
 
 
@@ -47,6 +49,8 @@ class AuthService(UserService):
         self.db.commit()
         return {"access_token":acc_token,"refresh_token":ref_token,"token_type":"bearer"}
 
+def get_auth_service(db:AsyncSession = Depends(get_db))->AuthService:
+    return AuthService(db)
 
 class IncorrectUserNamePassword(Exception):
     def __init__(self):

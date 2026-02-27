@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 # Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -8,6 +7,35 @@ from rest_framework import generics,filters
 from .serializer import CategorySerializer,ProductSerializer,OrderSerializer
 from .models import Category,Product
 from django.core.paginator import Paginator
+
+
+class CategoryApi:
+    
+    @api_view(['GET','POST'])
+    def category(request):
+        if request.method == 'GET':
+            print("GET request received for categories")
+            try:
+                category_data = CategorySerializer(Category.objects.all(),many=True).data
+                return Response(category_data,status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if request.method == 'POST':
+            a = request.data
+            create_category = CategorySerializer(data=request.data)
+            create_category.is_valid(raise_exception=True)
+            create_category.save()
+            return Response(create_category.data, status=status.HTTP_201_CREATED)
+    
+    @api_view(['GET'])
+    def category_id(request, id):
+        try:
+            category = Category.objects.get(id=id)
+            category_data = CategorySerializer(category).data
+            return Response(category_data, status=status.HTTP_200_OK)
+        except Category.DoesNotExist:
+            return Response({"error": "Category not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class ProductManagement:

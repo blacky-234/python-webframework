@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,timezone
 from jose import jwt,JWTError
-
+from jose.exceptions import ExpiredSignatureError
 """
 header.payload.signature
 
@@ -22,6 +22,9 @@ header.payload.signature
 3.
 """
 
+class InvalidToken(Exception):
+    pass
+
 class Tokens:
 
     secret_key = "hello good body developments"
@@ -33,7 +36,7 @@ class Tokens:
         Access tokens expire after 15 minutes
         """
         to_encode = subject.copy()
-        expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=15))
+        expire = datetime.now(timezone.utc) + (expires_delta if expires_delta else timedelta(minutes=15))
         to_encode.update({"exp": expire})
         encode_jwt = jwt.encode(to_encode, cls.secret_key, algorithm=cls.algorithm)
         return encode_jwt
@@ -44,7 +47,7 @@ class Tokens:
         Refresh tokens expire after 7 days
         """
         to_encode = data.copy()
-        expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(days=7))
+        expire = datetime.now(timezone.utc) + (expires_delta if expires_delta else timedelta(days=7))
         to_encode.update({"exp": expire})
         encode_jwt = jwt.encode(to_encode, cls.secret_key, algorithm=cls.algorithm)
         return encode_jwt
@@ -62,5 +65,15 @@ class Tokens:
             return True
         except JWTError:
             return None
+    
+    @classmethod
+    def token_payload(cls,token: str)->dict | None:
+        try:
+            payload = jwt.decode(token, cls.secret_key, algorithms=[cls.algorithm])
+            return payload
+        except ExpiredSignatureError:
+            raise ExpiredSignatureError
+        except JWTError:
+            raise JWTError
         
     

@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,timezone
 from jose import jwt,JWTError
 from src.auth import auth_schema
+from typing import Optional
 
 """
 header.payload.signature
@@ -27,25 +28,27 @@ class Tokens:
 
     secret_key = "hello good body developments"
     algorithm = "HS256"
+    Access_token_expire = 15
+    Refresh_token_expire = 7
     
     @classmethod
-    def create_access_token(cls,subject: dict, expires_delta: timedelta | None = None):
+    def create_access_token(cls,subject: dict, expires_delta:Optional[timedelta] = None):
         """
         Access tokens expire after 15 minutes
         """
         to_encode = subject.copy()
-        expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=15))
+        expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=cls.Access_token_expire))
         to_encode.update({"exp": expire})
         encode_jwt = jwt.encode(to_encode, cls.secret_key, algorithm=cls.algorithm)
         return encode_jwt
     
     @classmethod
-    def create_refresh_token(cls,data:dict, expires_delta: timedelta | None = None):
+    def create_refresh_token(cls,data:dict, expires_delta: Optional[timedelta] = None):
         """
         Refresh tokens expire after 7 days
         """
         to_encode = data.copy()
-        expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(days=7))
+        expire = datetime.now(timezone.utc) + (expires_delta or timedelta(days=cls.Refresh_token_expire))
         to_encode.update({"exp": expire})
         encode_jwt = jwt.encode(to_encode, cls.secret_key, algorithm=cls.algorithm)
         return encode_jwt

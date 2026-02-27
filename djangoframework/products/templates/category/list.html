@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>page</title>
     <link rel="stylesheet" href="{% static 'bootstrapframework/css/bootstrap.min.css' %}">
 </head>
 <body>
@@ -18,17 +18,154 @@
                 </tr>
             </thead>
             <tbody>
-                {% for category in categories %}
+                {% for category in page_obj %}
                 <tr>
-                <th scope="row">{{ forloop.counter}}</th>
+                <th scope="row">{{ page_obj.start_index|add:forloop.counter0 }}</th>
                 <td>{{category.name}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <div>
+            <h6>page design 1 </h6>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+
+                {# First & Previous #}
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                    &laquo;
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    Previous
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+                {% endif %}
+
+                {# Current Page #}
+                <li class="page-item active" aria-current="page">
+                <span class="page-link">
+                    {{ page_obj.number }}
+                    <span class="visually-hidden">(current)</span>
+                </span>
+                </li>
+
+                {# Next & Last #}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    Next
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                    &raquo;
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+
+        <div>
+            <h6>page design 2</h6>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        {% endif %}
+
+        <div>
+            <h6>page design 3</h6>
+        </div>
+
+
+        <ul class="pagination">
+
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prev</a>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+
+        </ul>
+        
         <div>
             <button class="btn btn-primary">add category</button>
         </div>
+        
     </div>
 </body>
 </html>

@@ -9,7 +9,8 @@ class User(BaseModel):
     phone: Optional[str] = None
     role: str = Field(default="user")
     status: bool = Field(default=True)
-
+    deleted_at: Optional[bool] = Field(default=False)
+    
     @validator("phone")
     def validate_phone(cls, v):
         if v is None:

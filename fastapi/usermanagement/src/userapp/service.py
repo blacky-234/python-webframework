@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from . import models
 from . import schema
 from utility.password import password_hash,verify_password
-from datetime import datetime,timedelta
-from utility.tokenManagement import Tokens
+from datetime import datetime,timedelta,timezone
+from utility.tokenManagement import Tokens,InvalidToken
 
 
 class EmailAlreadyExists(Exception):
@@ -27,7 +27,8 @@ class UserService:
         data = {
             "id":user.id,
             "username":user.name,
-            "email":user.email
+            "email":user.email,
+            "role":user.role
             }
         
         access_token_expires = timedelta(minutes=self.access_token)
@@ -37,28 +38,30 @@ class UserService:
 
         acc_token = Tokens.create_access_token(data,access_token_expires)
         ref_token = Tokens.create_refresh_token(data,refresh_token_expires)
-
-        print(f"access token {acc_token}")
-        print(f"refresh token {ref_token}")
-
+        # expiry_at = datetime.utcnow() + refresh_token_expires
+        expiry_at = datetime.now(timezone.utc)+refresh_token_expires
         token = models.TokenManagement(
             user_id=user.id,
             refresh_token=ref_token,
-            expires_at=datetime.utcnow() + refresh_token_expires)
+            expires_at=expiry_at)
         self.db.add(token)
         self.db.commit()
-        return {"access_token":acc_token,"refresh_token":ref_token,"token_type":"bearer"}
+        return {"access_token":acc_token,"refresh_token":ref_token,"expiry_at":expiry_at}
         
     async def get_by_email(self,email:str)->models.User | None:
         result =  self.db.query(models.User).filter(models.User.email == email).first()
         return result
+    async def validate_by_email_id(self,email:str,id:int)->models.User | None:
+        result =  self.db.query(models.User).filter(models.User.email == email).filter(models.User.id == id).first()
+        return result
+    
     async def get_by_id(self,id:int)->models.User | None:
         result =  self.db.query(models.User).filter(models.User.id == id).first()
         return result
     
     async def authenticate(self,email:str,password:str)->models.User | None:
         user = await self.get_by_email(email)
-        if not user or not verify_password(password,user.password):
+        if not user or not verify_password(password,user.password) or not user.status:
             raise UserNotFoundException()
         return user
     
@@ -89,11 +92,12 @@ class UserService:
     async def delete_user(self,id:int):
         if await self.get_by_id(id) is None:
             raise UserNotFoundException()
-        self.db.query(models.User).filter(models.User.id == id).delete()
+        self.db.query(models.User).filter(models.User.id == id).update({"deleted_at": True})
         self.db.commit()
         return True
 
-    async def user_update(self,id:int,user:schema.UserUpdate):
+    async def user_update(self,id:int,user:schema.UserUpdate,role:str):
+        print(f"what is role ----> {role}")
         user_row = await self.get_by_id(id)
         if user_row is None:
             raise UserNotFoundException()        
@@ -102,15 +106,24 @@ class UserService:
             "name": user.name if user.name is not None else user_row.name,
             "phone": user.phone if user.phone is not None else user_row.phone,
         }
+        if role == "admin":
+            if user.status is not None:
+                update_data["status"] = user.status
 
-        if user.status is not None:
-            update_data["status"] = user.status
-
-        if user.role is not None:
-            update_data["role"] = user.role
+            if user.role is not None:
+                update_data["role"] = user.role
 
         self.db.query(models.User).filter(models.User.id == id).update(update_data)
 
         self.db.commit()
         return True
     
+class TokenManagementService:
+    def __init__(self,db:Session):
+        self.db = db
+
+    async def refresh_token_verify(self,refresh_token:str)->models.TokenManagement | None:
+        result = self.db.query(models.TokenManagement).filter(models.TokenManagement.refresh_token == refresh_token).first()
+        if result is None or result.revoked or result.expires_at < datetime.now(timezone.utc):
+            raise InvalidToken()
+        return True

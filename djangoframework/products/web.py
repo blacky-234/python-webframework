@@ -4,6 +4,10 @@ from .models import Category,Product,Order
 from django.core.cache import cache
 from django.db.models import F
 from django.db import transaction
+from django.core.paginator import Paginator
+from django.db.models import Count,Sum,Case,When,Value,IntegerField,Q,Field,DecimalField,ExpressionWrapper,Prefetch
+from django.db.models import OuterRef, Subquery,Exists
+from django.db.models.functions import Coalesce
 
 
 
@@ -11,7 +15,25 @@ from django.db import transaction
 class ProductManaging:
 
     def select_inventory(request):
-        return render(request, "home/select_inventory.html")
+        context = {}
+
+        #1.category to product level grouping with annotations
+
+        product_qs = Product.objects.annotate(
+            total_value=ExpressionWrapper(F("stock") * F("price"),output_field=DecimalField()),
+        )
+        
+        context["category_group"] = Category.objects.annotate(
+                total_stock=Coalesce(Sum("products__stock"), Value(0)),
+                total_inventory_value=Coalesce(Sum(F("products__stock") * F("products__price")),Value(0),output_field=DecimalField()),
+                product_count=Count("products")
+            ).prefetch_related(
+                Prefetch("products", queryset=product_qs)
+            )
+        
+
+
+        return render(request, "home/select_inventory.html",context)
     
     def list_category(request):
         #TODO: memcache
@@ -22,12 +44,22 @@ class ProductManaging:
         #     cache.set("category", category, 60)
 
         category = Category.objects.all().order_by('-id')
-        return render(request, "category/list.html",{"categories":category})
+        paginator = Paginator(category,5)
+        page_no = request.GET.get('page')
+        page_obj = paginator.get_page(page_no)
+        return render(request, "category/list.html",{'page_obj':page_obj})
    
     @ensure_csrf_cookie
     def products_page(request):
         context = {}
         context["products"] = Product.objects.select_related("category").all()
+        #TODO: Conditional Expressions and Annotations
+        # category_for = Category.objects.annotate(
+        #     total_products=Count("product"),
+        #     total_stock=Coalesce(Sum("product__stock"),Value(0)),
+        #     total_value=Coalesce(Sum(F("product__stock") * F("product__price")),Value(0),output_field=IntegerField())
+        # ).all()    
+     
         return render(request, "product.html",context)
 
     @ensure_csrf_cookie

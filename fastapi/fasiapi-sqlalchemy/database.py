@@ -13,7 +13,7 @@ SQLALCHEMY_DATABASE_URL_FASTAPI = f"postgresql+asyncpg://djangouser:{db_passwd}@
 
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL_FASTAPI, pool_pre_ping=True,echo=True)
-SessionLocal = sessionmaker(bind=engine,class_=AsyncSession,expire_on_commit=False,autocommit=False,autoflush=False)
+SessionLocal = async_sessionmaker(bind=engine,class_=AsyncSession,expire_on_commit=False,autocommit=False,autoflush=False)
 
 Base = declarative_base()
 

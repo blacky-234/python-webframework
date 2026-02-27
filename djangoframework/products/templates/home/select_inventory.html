@@ -12,7 +12,51 @@
         <a href="{% url 'products:listcategory' %}"><button>category</button></a>
         <a href="{% url 'products:listproducts' %}"><button>product</button></a>
         <a href="{% url 'products:orderspage' %}"><button>order</button></a>
-       
     </div>
+
+    <div class="m-5 bg-info p-5 rounded">
+        <p>
+            This view provides a summary of inventory at the category level. The annotations are used to calculate the total product count, stock, and price for each category. The product price is calculated by multiplying the stock and price of each product and summing them up for each category. This view helps in understanding the inventory status of each category at a glance.
+        </p>
+    </div>
+
+    <div class="m-5 bg-secondary p-5 rounded">
+        <div>
+            <h4 class="text-center">grouped inventory view</h4>
+        </div>
+
+        {% for category in category_group %}
+        <div>
+            <h4>{{ forloop.counter }}.<u>{{ category.name }}:</u></h4>
+            <div class="mb-4 d-flex justify-content-center gap-3">
+                <p>Total Stock: {{ category.total_stock }}</p>
+                <p>Total Price: {{ category.total_inventory_value }}</p>
+                <p>Total Product Count: {{ category.product_count }}</p>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Total Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in category.products.all %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.stock }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.total_value }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+
+    </div>
+
 </body>
 </html>
