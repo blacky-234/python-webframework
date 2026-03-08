@@ -1,6 +1,9 @@
 from django.db import models
+from django.db.models import Subquery,OuterRef, F, ExpressionWrapper,Sum
+from django.db.models.functions import Coalesce
 
 # Create your models here.
+
 
 class TimeStampedModel(models.Model):
 
@@ -10,9 +13,19 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+
+class CategoryQuerySet(models.QuerySet):
+
+    def with_inventory_data(self):
+        return self.annotate(
+            total_stock=Coalesce(Sum('products__stock'), 0)
+        )
+
 class Category(models.Model):
 
     name = models.CharField(max_length=100,db_index=True,unique=True)
+
+    objects_anontation = CategoryQuerySet.as_manager()
 
     def __str__(self):
         return self.name

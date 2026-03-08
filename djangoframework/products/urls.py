@@ -1,5 +1,5 @@
 from django.urls import path
-from .api import ProductManagement,CategoryApi
+from .api import ProductManagement,CategoryApi,APIProjectManagement
 from .web import ProductManaging
 
 from .web_class import ListCategoryView
@@ -9,6 +9,11 @@ app_name = 'products'
 category_api_url = [
     path('api/categories/',CategoryApi.category),
     path('api/categories/<int:id>/',CategoryApi.category_id),
+]
+
+rest_api_project_mnagement_url = [
+
+    path('select/inventory/',APIProjectManagement.select_inventory, name='selectinventory'),
 ]
 
 rest_api_url = [
@@ -31,4 +36,4 @@ web_url = [
 
 web_class_url = [path('class/category/list/',ListCategoryView.as_view(), name='listcategoryclass'),]
 
-urlpatterns = rest_api_url+web_url+web_class_url+category_api_url
+urlpatterns = rest_api_url+web_url+web_class_url+category_api_url+rest_api_project_mnagement_url

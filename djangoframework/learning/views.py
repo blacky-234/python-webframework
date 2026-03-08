@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet,ModelViewSet,GenericViewSet,ReadOnlyModelViewSet,ViewSetMixin
 
 # Create your views here.
 
 
 
-class testing:
+class testing(ViewSet):
 
-    @api_view(['GET'])
-    def learning_view(request):
-        data = {
-            'message': 'Welcome to the learning app!'
-        }
-        return Response(data)
+    def list(self, request):
+        return Response({"message":"hello world"})
+    
+    def retrive(self, request, pk=None):
+        return Response({"message":"hello world"})

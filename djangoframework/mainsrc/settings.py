@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Employee',
     'products',
     'learning',
+    'urlpatterapp',
 ]
 
 MIDDLEWARE = [
@@ -55,12 +56,19 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csp.CSPMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'core.middleware.logging.SimpleMiddleware',
     'core.docker.container.ContainerMiddleware',
+    # 'core.middleware.timingmiddleware.AsyncTimingMiddleware',
 ]
+
+
+# CSP_DEFAULT_SRC = ("'self'",)
+# CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")
+# CSP_STYLE_SRC = ("'self'", "https://fonts.googleapis.com")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -106,10 +114,11 @@ ASGI_APPLICATION = 'mainsrc.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": ["redis://:admin123@172.21.0.6:6379/3"],
-        },
+            # "BACKEND": "channels_redis.core.RedisChannelLayer",
+            # "CONFIG": {
+            #     "hosts": ["redis://:admin123@172.21.0.6:6379/3"],
+            # },
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
 

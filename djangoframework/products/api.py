@@ -7,7 +7,7 @@ from rest_framework import generics,filters
 from .serializer import CategorySerializer,ProductSerializer,OrderSerializer
 from .models import Category,Product
 from django.core.paginator import Paginator
-
+from .apiproject_mng_serializer import CategoryInventorySerializer
 
 class CategoryApi:
     
@@ -63,7 +63,6 @@ class ProductManagement:
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 
     @api_view(['POST'])
     def create_order(request):
@@ -137,3 +136,13 @@ class ProductManagement:
             "results": serializer.data
         })
 
+
+class APIProjectManagement:
+
+    @api_view(['GET'])
+    def select_inventory(request):
+        datas = Category.objects_anontation.with_inventory_data()
+        # or 
+        # serilizer= Category.objects_anontation.with_inventory_data().values('id','name','total_stock')
+        serilizer = CategoryInventorySerializer(datas,many=True).data
+        return Response({"message": "API Project Management", "data": serilizer}, status=status.HTTP_200_OK)

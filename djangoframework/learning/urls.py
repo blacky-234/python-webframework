@@ -6,8 +6,6 @@ check = DefaultRouter()
 
 check.register(r'testing', testing, basename='testing')
 
-checking = [
-    path('api/', include('learning.urls')),
-]
 
-urlpatterns = checking
+
+urlpatterns = check.urls

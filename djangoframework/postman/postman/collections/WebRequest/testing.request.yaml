@@ -1,0 +1,4 @@
+$kind: websocket-request
+name: testing
+url: http://127.0.0.1:8000/ws/background-task/
+order: 1772982338570
