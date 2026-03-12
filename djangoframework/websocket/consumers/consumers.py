@@ -1,6 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import asyncio
+from asgiref.sync import sync_to_async
 
 class ProgressConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -96,3 +97,22 @@ class BackgroundTaskConsumer(AsyncWebsocketConsumer):
     async def do_background_task(self):
         await asyncio.sleep(10)
         await self.send(text_data="Background Task Completed!")
+
+
+"""
+Integrating WebSocket Data with Django Views and Backend:
+WebSockets can deliver real-time data updates that need to be integrated with Django’s synchronous backend, 
+for example, saving messages or triggering database updates.
+"""
+from asgiref.sync import sync_to_async
+# from myapp.models import Message
+
+class SaveMessageConsumer(AsyncWebsocketConsumer):
+
+    async def receive(self, text_data):
+        message = text_data
+
+        # Save message to DB asynchronously
+        # await sync_to_async(Message.objects.create)(content=message)
+
+        await self.send(text_data=f"Saved: {message}")

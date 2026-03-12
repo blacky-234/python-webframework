@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import SystemStatus,ReportStatus
-from .consumers import ProgressConsumer
+from websocket.consumers.consumers import ProgressConsumer
+from websocket.consumers.consumer_json import send_notification
 
 app_name = 'websocket'
 
@@ -18,5 +19,9 @@ testingwebsocket = [
     path('progr/<str:job_id>/', ProgressConsumer.as_asgi()),
 ]
 
+websocket_http = [
+    path('send/', send_notification, name='send_notification'),
+]
 
-urlpatterns = SystemPath+Report
+
+urlpatterns = SystemPath+Report+websocket_http
